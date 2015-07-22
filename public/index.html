@@ -4,6 +4,11 @@
 <head>
     <link rel="stylesheet" href="lib/skeleton/skeleton.css" />
     <script src="lib/jquery.js"></script>
+    <style>
+        img {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,31 +22,86 @@
         <input class="button-primary" type="submit" value="Submit" id="submit">
     </form>
     <div id="results">
-        <h1>Results</h1>
-        <table class="u-full-width">
-            <thead>
-                <tr>
-                    <th>Gif</th>
-                </tr>
-            </thead>
-            <tbody>
-        </table>
     </div>
     <script type="text/javascript">
-
     $(document).ready(function() {
-        $('#submit').on('click', function(e){
-        	$('#results tbody').html('');
-        	e.preventDefault();
-        	$.get(window.location.pathname + '?q=' + $('#query').val(), function(results){
-        		var i = 0, data = JSON.parse(results).data;
+        $('#submit').on('click', function(e) {
+            $('#results tbody').html('');
+            e.preventDefault();
+            $.get(window.location.pathname + '?q=' + $('#query').val(), function(results) {
+                var i = 0,
+                    data = JSON.parse(results).data;
 
-        		for (i = 0; i < data.length; i++){
-        			$('#results tbody').append('<tr><td><img src="'+data[i].images.downsized.url+'"/></td></tr>');
-        		}
+                renderCollection(data, $('#results'))
 
-        	});
+            });
         });
+
+        renderCollection = function(collection, $target) {
+            if (collection.length > 0) {
+                rowItemCount = 0;
+                rowNumItems = 0;
+                itemsLeft = collection.length;
+
+                for(var i = 0; i < collection.length; i++){
+
+                    var item = collection[i];
+                    if (rowItemCount >= rowNumItems) {
+                        rowNumItems = genRowNumItems(itemsLeft);
+                        rowNumItems = rowNumItems != 5 ? rowNumItems : 3;
+                        $row = $('<div class="row"></div>');
+                        $target.append($row);
+                        rowItemCount = 0;
+                    }
+
+                    responsiveClasses = this.genResponsiveClasses(rowNumItems || collection.length);
+                    renderItem($row, item.images.downsized.url, responsiveClasses);
+                    itemsLeft--;
+                    rowItemCount++;
+                }
+            }
+        }
+
+
+
+        renderItem = function($target, src, responsiveClasses) {
+            $item = $('<div class="' + responsiveClasses + ' columns" ></div>');
+
+            $item.append('<img src="' + src + '"/>');
+            $target.append($item);
+            return $target;
+        };
+        genResponsiveClasses = function(numItems) {
+            switch (numItems) {
+                case 1:
+                    return 'twelve';
+                case 2:
+                    return 'six';
+                case 3:
+                    return 'four';
+                case 4:
+                    return 'three';
+                default:
+                    return 'three';
+            }
+        };
+        genRowNumItems = function(numItems) {
+            if (numItems <= 4) {
+                if (numItems % 4 === 0) {
+                    return 4;
+                } else if (numItems % 3 === 0) {
+                    return 3;
+                } else if (numItems % 2 === 0) {
+                    return 2;
+                } else {
+                    return 1;
+                }
+            } else if (numItems === 5) {
+                return 5;
+            } else {
+                return 4;
+            }
+        };
     });
     </script>
 </body>
