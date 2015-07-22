@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="lib/skeleton/skeleton.css" />
+    <script src="lib/jquery.js"></script>
+</head>
+
+<body>
+    <form>
+        <div class="row">
+            <div class="six columns">
+                <label for="query">Query</label>
+                <input class="u-full-width" placeholder="cats" id="query">
+            </div>
+        </div>
+        <input class="button-primary" type="submit" value="Submit" id="submit">
+    </form>
+    <div id="results">
+        <h1>Results</h1>
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <th>Gif</th>
+                </tr>
+            </thead>
+            <tbody>
+        </table>
+    </div>
+    <script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#submit').on('click', function(e){
+        	$('#results tbody').html('');
+        	e.preventDefault();
+        	$.get(window.location.pathname + '?q=' + $('#query').val(), function(results){
+        		var i = 0, data = JSON.parse(results).data;
+
+        		for (i = 0; i < data.length; i++){
+        			$('#results tbody').append('<tr><td><img src="'+data[i].images.downsized.url+'"/></td></tr>');
+        		}
+
+        	});
+        });
+    });
+    </script>
+</body>
+
+</html>
