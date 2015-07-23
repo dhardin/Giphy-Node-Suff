@@ -1,100 +1,56 @@
-var http = require('http');
-var url = require('url');
-var fs = require('fs');
-var path = require('path');
-var mime = require('mime');
-var cache = {};
+/*
+ * app.js - Express server with routing
+ */
+/*jslint node : true, continue : true,
+devel : true, indent : 2, maxerr : 50,
+newcap : true, nomen : true, plusplus : true,
+regexp : true, sloppy : true, vars : false,
+white : true
+*/
+/*global */
+// ------------------ BEGIN MODULE SCOPE VARIALBES ----------------
+'use strict';
+var
+    https = require('https'),
+    express = require('express'),
+    routes = require('./lib/routes'),
+    app = express(),
+    server = http.createServer(app);
 
-var server = http.createServer(function(req, res) {
+// ------------------ END MODULE SCOPE VARIALBES ----------------
 
-    var filePath = false;
-    if (req.url == '/') {
-        filePath = 'public/index.html';
-    } else {
-        filePath = 'public' + req.url;
-    }
-    var absPath = './' + filePath;
-    if(filePath.indexOf('?q') == -1){
-         serveStatic(res, cache, absPath);
-         return;
-    }
+// ------------------ BEGIN SERVER CONFIGURATION----------------
+app.configure(function() {
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(express.static(__dirname + '/public'));
+    app.use(app.router);
     
-
-    switch (req.method) {
-        case 'POST':
-            var item = '';
-            req.setEncoding('utf8');
-            req.on('data', function(chunk) {
-                item += chunk;
-            });
-            req.on('end', function() {
-                items.push(item);
-                res.end('OK\n');
-            });
-            break;
-        case 'GET':
-            var query = url.parse(req.url).query,
-                api_key = 'dc6zaTOxFJmzC',
-                api_url = 'http://api.giphy.com',
-                search_path = '/v1/gifs/search';
-            console.log(query);
-
-            http.get(api_url + search_path + '?' + query + '&api_key=' + api_key, function(response) {
-                var body = '';
-                response.setEncoding('utf8');
-                response.on('data', function(chunk) {
-                    body += chunk;
-                });
-                response.on('end', function() {
-                    res.write(body);
-                    res.end();
-                });
-            }).on('error', function(e) {
-                res.write("Got error: ", e);
-                res.end();
-            });
-            break;
-    }
 });
 
-function send404(response) {
-    response.writeHead(404, {
-        'Content-Type': 'text/plain'
-    });
-    response.write('Error 404: resource not found.');
-    response.end();
-}
 
-function sendFile(response, filePath, fileContents) {
-    response.writeHead(
-        200, {
-            "content-type": mime.lookup(path.basename(filePath))
-        }
+app.configure('development', function() {
+    app.use(express.logger());
+    app.use(express.errorHandler({
+        dumpExceptions: true,
+        showStack     : true
+        })
     );
-    response.end(fileContents);
-}
-
-function serveStatic(response, cache, absPath) {
-    if (cache[absPath]) {
-        sendFile(response, absPath, cache[absPath]);
-    } else {
-        fs.exists(absPath, function(exists) {
-            if (exists) {
-                fs.readFile(absPath, function(err, data) {
-                    if (err) {
-                        send404(response);
-                    } else {
-                        cache[absPath] = data;
-                        sendFile(response, absPath, data);
-                    }
-                });
-            } else {
-                send404(response);
-            }
-        });
-    }
-}
-
-server.listen(3000, function() {
-    console.log("Server listening on port 3000.");
 });
+
+app.configure('production', function() {
+    app.use(express.errorHandler());
+});
+
+//configure routes
+routes.configRoutes(app, server);
+// ------------------ END SERVER CONFIGURATION----------------
+
+// ------------------ BEGIN START SERVER----------------
+server.listen(3000);
+console.log(
+    'Express server listening on port %d in %s mode',
+    server.address().port, app.settings.env
+);
+// ------------------ END START SERVER----------------
+
