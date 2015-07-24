@@ -11,7 +11,7 @@ white : true
 // ------------------ BEGIN MODULE SCOPE VARIALBES ----------------
 'use strict';
 var
-    https = require('https'),
+    http = require('http'),
     express = require('express'),
     routes = require('./lib/routes'),
     app = express(),
@@ -48,6 +48,7 @@ routes.configRoutes(app, server);
 
 // ------------------ BEGIN START SERVER----------------
 server.listen(3000);
+
 console.log(
     'Express server listening on port %d in %s mode',
     server.address().port, app.settings.env
