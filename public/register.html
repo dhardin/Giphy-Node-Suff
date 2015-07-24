@@ -3,33 +3,8 @@
 
 <head>
     <link rel="stylesheet" href="lib/skeleton/skeleton.css" />
+    <link rel="stylesheet" href="css/style.css" />
     <script src="lib/jquery.js"></script>
-    <style>
-    #results img,
-    #submit {
-        width: 100%;
-    }
-    
-    .hidden {
-        visibility: hidden;
-    }
-    
-    .right {
-        float: right;
-    }
-    
-    .clear {
-        clear: both;
-    }
-    
-    .hide {
-        display: none;
-    }
-    
-    a.sign-up {
-        cursor: pointer;
-    }
-    </style>
 </head>
 
 <body>
@@ -38,7 +13,7 @@
             <div class="row">
                 <div class="six columns">
                     <label for="username">Username</label>
-                    <input pattern=".{5,10}" required title="5 to 10 characters" type="text" class="u-full-width username" placeholder="Username"/>
+                    <input pattern=".{5,10}" required title="5 to 10 characters" type="text" class="u-full-width username" placeholder="Username" />
                 </div>
                 <div class="six columns">
                     <label for="username">Email</label>
@@ -57,7 +32,7 @@
             </div>
             <input class="button-primary right" type="submit" value="Win a Panda" id="register">
             <br>
-             <span class="clear right">Already a user? <a href="/" >Login</a> and win a <img title="super snuggly panda" class="panda" src="img/panda.png"/></span>
+            <span class="clear right">Already a user? <a href="/" >Login</a> and win a <img title="super snuggly panda" class="panda" src="img/panda.png"/></span>
             <h6 class="status"></h6>
         </form>
     </div>
@@ -90,14 +65,14 @@
                 } else {
                     data.password = $password.val();
                     $.post('/create', data, function(results) {
-                        window.location.replace(window.location + '/search');   
+                        window.location.replace(window.location + '/search');
                     });
                 }
             });
         });
 
 
-        $('#password-confirm').on('keyup', function(e){
+        $('#password-confirm').on('keyup', function(e) {
             validatePassword($('#password1'), $(this));
         });
 

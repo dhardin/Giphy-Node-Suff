@@ -1,0 +1,24 @@
+    #results img,
+    #submit {
+        width: 100%;
+    }
+    
+    .hidden {
+        visibility: hidden;
+    }
+    
+    .right {
+        float: right;
+    }
+    
+    .clear {
+        clear: both;
+    }
+    
+    .hide {
+        display: none;
+    }
+    
+    a.sign-up {
+        cursor: pointer;
+    }
