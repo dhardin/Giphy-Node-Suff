@@ -46,7 +46,7 @@
 
             $.post("/login", data, function(results) {
                 if (results.length == 1) {
-                           window.location.replace(window.location + 'search.html'); 
+                           window.location.pathname =  '/search.html';
                 } else {
                     $('.status').text('Username and/or password do not match. :/');
                 }

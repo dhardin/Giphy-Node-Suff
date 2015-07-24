@@ -65,7 +65,7 @@
                 } else {
                     data.password = $password.val();
                     $.post('/create', data, function(results) {
-                        window.location.replace(window.location + '/search');
+                         window.location.pathname =  '/search.html';
                     });
                 }
             });
@@ -73,7 +73,7 @@
 
 
         $('#password-confirm').on('keyup', function(e) {
-            validatePassword($('#password1'), $(this));
+            validatePassword($('#password'), $(this));
         });
 
         validatePassword = function($password, $password2) {
